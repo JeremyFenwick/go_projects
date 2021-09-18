@@ -25,6 +25,7 @@ func main() {
 	repos, _, err := client.Repositories.List(ctx, "", nil)
 	if err != nil {
 		println("Could not retrieve repositories...")
+		os.Exit(1)
 	}
 
 	// Loop over the repository. If the repo name and owner name provided match the details of the repository,
