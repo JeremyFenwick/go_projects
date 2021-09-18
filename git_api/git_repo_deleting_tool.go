@@ -13,9 +13,9 @@ import (
 
 func main() {
 	// Gather all the required inputs and feed them into the relevant functions
-	repoNameFlag := flag.String("repo", "N/A", "Input the name of the repository for deletion")
-	ownerNameFlag := flag.String("owner", "N/A", "Input the name of the owner of the repository for deletion")
-	accessToken := flag.String("token", "N/A", "Enter the access token in a text file here. (Ex token.txt)")
+	repoNameFlag := flag.String("repo", "N/A", "Input the name of the repository for deletion:")
+	ownerNameFlag := flag.String("owner", "N/A", "Input the name of the owner of the repository for deletion:")
+	accessToken := flag.String("token", "N/A", "Enter the access token in a text file here. (ex. token.txt):")
 	flag.Parse()
 	token := readAccessToken(accessToken)
 	ctx, client := setupClient(token)
@@ -25,10 +25,12 @@ func main() {
 	repos, _, err := client.Repositories.List(ctx, "", nil)
 	if err != nil {
 		println("Could not retrieve repositories...")
+		os.Exit(1)
 	}
 
 	// Loop over the repository. If the repo name and owner name provided match the details of the repository,
 	// delete the repository and print the response to terminal
+	counter := 0
 	for _, repo := range repos {
 		if repo.GetName() == repoName && repo.Owner.GetLogin() == repoOwner {
 			response, err := client.Repositories.Delete(ctx, repo.Owner.GetLogin(), repoName)
@@ -40,6 +42,7 @@ func main() {
 		}
 
 	}
+	fmt.Println("Deleted %i repositories. Exiting...", counter)
 }
 
 // Process the token for connecting to github
